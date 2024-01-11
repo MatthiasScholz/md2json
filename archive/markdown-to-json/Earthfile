@@ -1,0 +1,18 @@
+# Earthfile
+
+FROM alpine:latest
+
+RUN apk --no-cache --update add python3 py3-pip
+RUN python3 -m pip install markdown-to-json
+
+WORKDIR /code
+
+build:
+  COPY ../md/ .
+  RUN md_to_json blips/languags_and_frameworks/single-spa.md -o output.json
+  RUN md_to_json test.md -o output.json
+  SAVE ARTIFACT output.json
+
+deploy:
+  COPY +build/output.json .
+  RUN cat output.json
